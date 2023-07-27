@@ -1,13 +1,13 @@
 import { createAudioPlayer, createAudioResource, NoSubscriberBehavior } from "@discordjs/voice";
 import play from 'play-dl';
-import stringIsAValidUrl from './URLValidate.js';
-import { ytPlaylistPattern, ytVideoPattern } from '../Global/Variable.js'
+import stringIsAValidUrl from '../URLValidate.js';
+import { ytPlaylistPattern, ytVideoPattern } from '../../Global/Variable.js'
 
-export default class AudioPlayback {
+class AudioPlaybackX {
     constructor() {
         this.player = createAudioPlayer({
             behaviors: {
-                noSubscriber: NoSubscriberBehavior.Stop,
+                noSubscriber: NoSubscriberBehavior.Play,
             },
         });
         this.AudioInfo = null;
@@ -47,3 +47,6 @@ export default class AudioPlayback {
         this.player.stop();
     }
 }
+
+const AudioPlayback = new AudioPlaybackX();
+export default AudioPlayback;

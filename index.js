@@ -5,12 +5,13 @@ dotenv.config();
 
 const manager = new ShardingManager('./src/bot.js', {
     token: process.env.TOKEN,
-    totalShards: 1
+    totalShards: parseInt(process.env.SHARDCOUNT)
 })
-
+console.log('Loading..');
 manager.on('shardCreate', (shard) => {
-    console.log(`Launched shard ${shard.id}`);
-    console.log(manager.shardList);
+    if (shard.id == process.env.SHARDCOUNT - 1) {     
+        console.log('All Shard Launched');
+    }
 });
 
 manager.spawn();

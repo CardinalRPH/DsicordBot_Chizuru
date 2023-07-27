@@ -1,4 +1,4 @@
-export default class Queues {
+class QueuesX {
     constructor() {
         this.queue = [];
     }
@@ -56,7 +56,34 @@ export default class Queues {
         this.queue = this.queue.sort((a, b) => a.id - b.id);
     }
 
+    skipAllQueueLoop(skipIndex) {
+        const rotatedArray = this.queue.slice(skipIndex).concat(this.queue.slice(0, skipIndex));
+        this.queue = [...rotatedArray]
+    }
+
+    nextAllQueueLoop() {
+        if (this.checkNextQueue()) {
+            const firstEl = this.queue.shift();
+            this.queue.push(firstEl);
+            return this.queue[0];
+        } else {
+            return false;
+        }
+    }
+
+    removeOneQueue(index) {
+        this.queue.splice(index, 1);
+    }
+
+
     clearQueue() {
         this.queue = []
     }
+
+    clearCurrentQueue() {
+        this.queue.splice(1);
+    }
 }
+
+const Queues = new QueuesX();
+export default Queues;

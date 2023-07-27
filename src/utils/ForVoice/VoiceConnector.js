@@ -1,18 +1,11 @@
 import { VoiceConnectionStatus, joinVoiceChannel } from "@discordjs/voice";
-export default class VoiceConnector {
-    constructor(channelId, guildId, adapterCreator) {
-        if (channelId && guildId && adapterCreator) {
-            this._channelId = channelId;
-            this._guildId = guildId;
-            this._adapterCreator = adapterCreator;
-        }
-    }
+export default class VoiceConnectorX {
 
-    connect() {
+    connect(channelId, guildId, adapterCreator) {
         const connection = joinVoiceChannel({
-            channelId: this._channelId,
-            guildId: this._guildId,
-            adapterCreator: this._adapterCreator
+            channelId: channelId,
+            guildId: guildId,
+            adapterCreator: adapterCreator
         });
         return connection;
     }
@@ -32,6 +25,4 @@ export default class VoiceConnector {
             });
         });
     }
-
-
 }

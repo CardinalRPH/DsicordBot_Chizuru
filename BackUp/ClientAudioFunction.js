@@ -1,30 +1,34 @@
-import VoiceConnector from "../utils/VoiceConnector.js";
-import AudioPlayback from "../utils/AudioPlayer.js";
-import { musicButton, musicEmbed } from "../utils/textFormatter.js";
-import Queues from "../utils/Queue.js";
-import VConnectionState from "../States/VConnectionState.js";
-import { prefix } from "../Global/Variable.js";
+import VoiceConnector from "../src/utils/ForVoice/VoiceConnector.js";
+import AudioPlayback from "../src/utils/ForAudio/AudioPlayer.js";
+import { musicButton, musicEmbed } from "../src/utils/textFormatter.js";
+import Queues from "../src/utils/ForAudio/Queue.js";
+import VConnectionState from "../src/States/VoiceStates/VConnectionState.js";
+import { prefix } from "../src/Global/Variable.js";
 
-const Playerplayback = new AudioPlayback();
-const Queuex = new Queues();
+const Playerplayback = new AudioPlayback(); //playbackState
+const Queuex = new Queues(); //Queue State
+
 const VConnState = new VConnectionState();
-// let connection = VConnState.getVConnection();
-let VConnector = null;
-let subscription = null;
-let prevMessage;
+let VConnector = null; //voice state
 let clientVoiceId = null;
 let voiceChannel = null;
-const pageSize = 7;
+
+let subscription = null; //subState
+
+let prevMessage; //msgState
+let prevPlaying;
+
+const pageSize = 7; //pageState
 let CurrentPage = 0;
-let isPlayingNextSong = true;
 
-let isLooping = false;
+let isPlayingNextSong = true; //stop file
 
-let isShuffleOn = false;
+let isLooping = false; //loop state
+
+let isShuffleOn = false; //shuffle state
 let isShuffleOff = false;
 let onShuffle = false;
 
-let prevPlaying;
 //note
 // add handler when music end of queue isPlayingNextSong = false
 // add handler when music first playig or connect isPlayingNextSong = true
