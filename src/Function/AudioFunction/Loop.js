@@ -1,6 +1,6 @@
 import LoopState from "../../States/AudioStates/LoopState.js";
 
-const Loop = (msg) => {
+export const Loop = (msg) => {
     if (LoopState.getLooping) {
         LoopState.setLooping = false;
         msg.reply('Turning Off Looping');
@@ -10,4 +10,12 @@ const Loop = (msg) => {
     }
 }
 
-export default Loop;
+export const LoopAll = (msg) => {
+    if (LoopState.getLoopAllQueue) {
+        LoopState.setLoopAllQueue = false;
+        msg.reply('Turning Off Loopingfor All Song');
+    } else {
+        LoopState.setLoopAllQueue = true;
+        msg.reply('Turning On Looping for all songs in queue.');
+    }
+}

@@ -13,8 +13,10 @@ import Stop from "../Function/AudioFunction/Stop.js";
 import Queue from "../Function/AudioFunction/Queue.js";
 import Skip from "../Function/AudioFunction/Skip.js";
 import NowPlaying from "../Function/AudioFunction/NowPlaying.js";
-import Loop from "../Function/AudioFunction/Loop.js";
+import { Loop, LoopAll } from "../Function/AudioFunction/Loop.js";
 import Shuffle from "../Function/AudioFunction/Shuffle.js";
+import ClearCurrentQueue from "../Function/AudioFunction/ClearCurrentQueue.js";
+import RemoveOne from "../Function/AudioFunction/RemoveOne.js";
 
 const ClientAudioFunctionX = (client) => {
 
@@ -50,7 +52,7 @@ const ClientAudioFunctionX = (client) => {
                 Resume(msg);
                 break;
             case content == `${prefix}stop`:
-                Stop(msg)
+                Stop(msg);
                 break;
             case (content == `${prefix}queue`) || (content == `${prefix}q`):
                 Queue(msg, client);
@@ -63,15 +65,27 @@ const ClientAudioFunctionX = (client) => {
                 NowPlaying(msg);
                 break;
 
-            case msg.content.split(' ')[0].toString() == `${prefix}loop`:
+            case content == `${prefix}loop`:
                 Loop(msg);
                 break;
 
-            case msg.content.split(' ')[0].toString() == `${prefix}shuffle`:
-                Shuffle(msg)
+            case content == `${prefix}shuffle`:
+                Shuffle(msg);
                 break;
 
-            case msg.content.split(' ')[0].toString() == `${prefix}cdevdebug`:
+            case content == `${prefix}loopall`:
+                LoopAll(msg);
+                break;
+
+            case content == `${prefix}clearcurrent`:
+                ClearCurrentQueue(msg);
+                break;
+
+            case content == `${prefix}remove`:
+                RemoveOne(msg);
+                break;
+
+            case content == `${prefix}cdevdebug`:
                 // console.log(Playerplayback.player.state.status);
                 // console.log(Queuex.getAllQueue());
                 // console.log(`the id is${Queuex.queue[0].id}`);

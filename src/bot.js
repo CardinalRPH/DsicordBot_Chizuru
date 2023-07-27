@@ -35,8 +35,6 @@ ClientAudioFunctionX(client);
 ClientSlashFunction(client)
 
 //note
-//add loop all queue to path
-//add clear current queue to path
 // remove 1 queue
 
 

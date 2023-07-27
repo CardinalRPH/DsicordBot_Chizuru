@@ -1,8 +1,10 @@
-import Loop from "../Function/AudioFunction/Loop.js";
+import ClearCurrentQueue from "../Function/AudioFunction/ClearCurrentQueue.js";
+import { Loop, LoopAll } from "../Function/AudioFunction/Loop.js";
 import NowPlaying from "../Function/AudioFunction/NowPlaying.js";
 import Pause from "../Function/AudioFunction/Pause.js";
 import Play from "../Function/AudioFunction/Play.js";
 import Queue from "../Function/AudioFunction/Queue.js";
+import RemoveOne from "../Function/AudioFunction/RemoveOne.js";
 import Resume from "../Function/AudioFunction/Resume.js";
 import Shuffle from "../Function/AudioFunction/Shuffle.js";
 import Skip from "../Function/AudioFunction/Skip.js";
@@ -51,14 +53,22 @@ const ClientSlashFunction = (client) => {
             case 'loop':
                 Loop(interaction);
                 break;
+            case 'loopall':
+                LoopAll(interaction);
+                break;
             case 'shuffle':
                 Shuffle(interaction);
                 break;
+            case 'clearCurrentQueue':
+                ClearCurrentQueue(interaction);
             case 'connect':
                 Connect(interaction);
                 break;
             case 'disconnect':
                 Disconnect(interaction);
+                break;
+            case 'removeQueue':
+                RemoveOne(interaction, interaction.options.get('removeindex').value);
                 break;
             case 'ctest':
                 console.log('[Hello]');

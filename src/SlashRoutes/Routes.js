@@ -38,6 +38,10 @@ const command = [
         name: 'loop',
         description: "Looping a single tracks"
     }, {
+        name: 'loopall',
+        description: 'Looping all queue track'
+
+    }, {
         name: 'shufflle',
         description: "Shuffling All Queue."
     }, {
@@ -49,6 +53,18 @@ const command = [
     }, {
         name: 'disconnect',
         description: 'Disconnect Bot From The voice channel and Stop Playback'
+    }, {
+        name: 'clearCurrentQueue',
+        description: 'Clear Current Queue.'
+    }, {
+        name: 'removeQueue',
+        description: 'Remove 1 track from the queue',
+        options: [{
+            name: 'removeindex',
+            description: 'select which one you want remove by its position in list ',
+            type: ApplicationCommandOptionType.Number,
+            required: true
+        }]
     }, {
         name: 'ctest',
         description: 'Testing'
