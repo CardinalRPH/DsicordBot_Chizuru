@@ -17,12 +17,18 @@ const APlayerState = async (oldState, newState, msg) => {
         console.log('[Debug] Playing Music');
     }
     if (oldState.status === 'playing' && newState.status === 'idle') {
-        if (StopState.getisPlayingNextSong == true && LoopState.getLooping == false ) {
+        if (StopState.getisPlayingNextSong == true && LoopState.getLooping == false) {
             if (Queues.checkNextQueue()) {
-                let nxtSong = Queues.nextQueue();
-                
+                if (disconnectTimeout) {
+                    clearTimeout(disconnectTimeout);
+                }
+
+                let nxtSong;
+
                 if (LoopState.getLoopAllQueue == true) {
-                    nxtSong = Queues.nextQueueLoop();
+                    nxtSong = Queues.nextAllQueueLoop();
+                } else {
+                    nxtSong = Queues.nextQueue();
                 }
                 if (ShuffleState.getisShuffleOn == true) {
                     Queues.shuffleQueue();
@@ -36,35 +42,42 @@ const APlayerState = async (oldState, newState, msg) => {
                 }
                 AudioPlayback.play(nxtSong.url);
                 // console.log('next play');
-                if (MsgState.getPrevPlayMsg) {
-                    MsgState.getPrevPlayMsg.delete();
-                }
-                if (disconnectTimeout) {
-                    clearTimeout(disconnectTimeout);
+                if (await MsgState.getPrevPlayMsg) {
+                    await MsgState.getPrevPlayMsg.delete();
                 }
                 MsgState.setPrevPlayMsg = await msg.channel.send({ embeds: musicEmbed(nxtSong.title, nxtSong.durationRaw, nxtSong.name, nxtSong.username, nxtSong.thumbnails, nxtSong.url) });
             } else {
                 SubscriptionState.getSubscription.unsubscribe();
                 console.log('[Debug] no Playing');
                 Queues.clearQueue();
-                MsgState.getPrevPlayMsg.delete();
+                if (MsgState.getPrevPlayMsg) {
+                    MsgState.getPrevPlayMsg.delete();
+                }
 
                 disconnectTimeout = setTimeout(() => {
+                    if (MsgState.getPrevQMsg) {
+                        MsgState.getPrevQMsg.edit({ components: [] });
+                    }
                     VoiceConnector.disconnect(VConnectionState.getVConnection);
                     VConnectionState.setVConnection = null;
+                    ShuffleState.setisShuffleOff = false;
+                    ShuffleState.setisShuffleOn = false;
+                    ShuffleState.setonShuffle = false;
+                    LoopState.setLoopAllQueue = false;
+                    LoopState.setLooping = false;
                     console.log('[Debug] Disconnected');
                 }, 60000);
             }
         }
         if (LoopState.getLooping == true) {
+            if (disconnectTimeout) {
+                clearTimeout(disconnectTimeout);
+            }
             AudioPlayback.play(Queues.getQueue(0).url);
             if (MsgState.getPrevPlayMsg) {
                 MsgState.getPrevPlayMsg.delete();
             }
             MsgState.setPrevPlayMsg = await msg.channel.send({ embeds: musicEmbed(Queues.getQueue(0).title, Queues.getQueue(0).durationRaw, Queues.getQueue(0).name, Queues.getQueue(0).username, Queues.getQueue(0).thumbnails, Queues.getQueue(0).url) });
-            if (disconnectTimeout) {
-                clearTimeout(disconnectTimeout);
-            }
         }
     }
 }

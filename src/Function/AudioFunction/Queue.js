@@ -1,20 +1,38 @@
 import MsgState from "../../States/AudioStates/MsgState.js";
 import PageState from "../../States/AudioStates/PageState.js";
+import VConnectionState from "../../States/VoiceStates/VConnectionState.js";
+import VoiceState from "../../States/VoiceStates/VoiceState.js";
 import Queues from "../../utils/ForAudio/Queue.js";
 import { musicButton } from "../../utils/textFormatter.js";
 
 const Queue = async (msg, client) => {
+    if (!VoiceState.getVoiceChannel) {
+        msg.reply('You are not in Voice Channel');
+        return;
+    }
+    if (!VConnectionState.getVConnection) {
+        msg.reply('Bot not in Voice Channel');
+        return;
+    }
+    if (VoiceState.getVoiceChannel.id != VoiceState.getClientVoiceId) {
+        msg.reply('You are not in Same Voice Channel');
+        return;
+    }
     if (MsgState.getPrevQMsg) {
         MsgState.getPrevQMsg.edit({ components: [] });
     }
     const QueueA = Queues.getAllQueue();
-    MsgState.setPrevQMsg = await msg.reply(QueueA.length > 5 ? {
-        content: `\`\`\`ini\n ${QueueA.slice(0, PageState.getPageSize).map((value, index) => `[${index}] ${value.title} ReqBy ${value.username}\n`)}\`\`\``,
-        components: musicButton(true, false)
-    } : {
-        content: `\`\`\`ini\n ${QueueA.slice(0, PageState.getPageSize).map((value, index) => `[${index}] ${value.title} ReqBy ${value.username}\n`)}\`\`\``,
-        components: []
-    });
+    if (QueueA.length >= 1) {     
+        MsgState.setPrevQMsg = await msg.reply(QueueA.length > 5 ? {
+            content: `\`\`\`ini\n ${QueueA.slice(0, PageState.getPageSize).map((value, index) => `[${index}] ${value.title} ReqBy ${value.username}\n`)}\`\`\``,
+            components: musicButton(true, false)
+        } : {
+            content: `\`\`\`ini\n ${QueueA.slice(0, PageState.getPageSize).map((value, index) => `[${index}] ${value.title} ReqBy ${value.username}\n`)}\`\`\``,
+            components: []
+        });
+    } else {
+        MsgState.reply('No Track in this Queue');
+    }
 
     client.on('interactionCreate', async (interaction) => {
         try {
@@ -33,7 +51,7 @@ const Queue = async (msg, client) => {
             });
         } catch (e) {
             // console.log(e);
-            console.log('Something wrong');
+            console.log('[Info] Something wrong');
         }
     });
 }

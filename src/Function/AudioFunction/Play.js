@@ -28,7 +28,7 @@ const Play = async (msg, slashResource) => {
             await addSongsQueue(resource, msg);
             if (Queues.getMaxId() == 1) {
                 AudioPlayback.play(Queues.getQueue(0).url);
-                MsgState.setPrevPlayMsg = await msg.reply({ embeds: musicEmbed(Queues.getQueue(0).title, Queues.getQueue(0).durationRaw, Queues.getQueue(0).name, Queues.getQueue(0).username, Queues.getQueue(0).thumbnails, Queues.getQueue(0).url) });
+                MsgState.setPrevPlayMsg = await msg.channel.send({ embeds: musicEmbed(Queues.getQueue(0).title, Queues.getQueue(0).durationRaw, Queues.getQueue(0).name, Queues.getQueue(0).username, Queues.getQueue(0).thumbnails, Queues.getQueue(0).url) });
                 SubscriptionState.setSubscription = VConnectionState.getVConnection.subscribe(AudioPlayback.player);
             }
         } else {
@@ -45,15 +45,15 @@ const Play = async (msg, slashResource) => {
                 SubscriptionState.setSubscription = VConnectionState.getVConnection.subscribe(AudioPlayback.player);
 
             }
-            AudioPlayback.player.on('stateChange', (oldState, newState) => {
-                APlayerState(oldState, newState, msg)
-
-                // Add disni blomm adaa
-            });
         }).catch((e) => {
-            console.log(e);
+            console.error(e);
         })
     }
+    AudioPlayback.player.on('stateChange', (oldState, newState) => {
+        APlayerState(oldState, newState, msg)
+
+        // Add disni blomm adaa
+    });
 }
 
 export default Play;

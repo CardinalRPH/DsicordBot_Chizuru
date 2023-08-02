@@ -81,7 +81,7 @@ const ClientAudioFunction = (client) => {
                 VConnector = new VoiceConnector(voiceChannel.id, voiceChannel.guild.id, voiceChannel.guild.voiceAdapterCreator);
             }
         } catch (e) {
-            console.log('not in voice');
+            console.log('[Debug] not in voice');
         }
 
         switch (true) {

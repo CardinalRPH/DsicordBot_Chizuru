@@ -25,12 +25,8 @@ class QueuesX {
     }
 
     nextQueue() {
-        if (this.checkNextQueue()) {
-            this.queue.splice(0, 1);
-            return this.queue[0];
-        } else {
-            return false;
-        }
+        this.queue.splice(0, 1);
+        return this.queue[0];
     }
 
     checkNextQueue() {

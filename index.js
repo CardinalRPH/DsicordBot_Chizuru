@@ -7,10 +7,10 @@ const manager = new ShardingManager('./src/bot.js', {
     token: process.env.TOKEN,
     totalShards: parseInt(process.env.SHARDCOUNT)
 })
-console.log('Loading..');
+console.log('[Debug] Loading..');
 manager.on('shardCreate', (shard) => {
     if (shard.id == process.env.SHARDCOUNT - 1) {     
-        console.log('All Shard Launched');
+        console.log('[Debug] All Shard Launched');
     }
 });
 

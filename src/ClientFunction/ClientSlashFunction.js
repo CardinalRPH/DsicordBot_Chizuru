@@ -9,6 +9,8 @@ import Resume from "../Function/AudioFunction/Resume.js";
 import Shuffle from "../Function/AudioFunction/Shuffle.js";
 import Skip from "../Function/AudioFunction/Skip.js";
 import Stop from "../Function/AudioFunction/Stop.js";
+import PrefixCheck from "../Function/CheckPrefix.js";
+import PrefixRegisUpdate from "../Function/PrefixRegisterUpdate.js";
 import Connect from "../Function/VoiceFunction/Connect.js";
 import Disconnect from "../Function/VoiceFunction/Disconnect.js";
 import VoiceState from "../States/VoiceStates/VoiceState.js";
@@ -22,7 +24,7 @@ const ClientSlashFunction = (client) => {
         try {
             VoiceState.setVoiceChannel = interaction.member.voice.channel
         } catch (e) {
-            console.log(e);
+            console.error(e);
         }
 
         switch (commandName) {
@@ -30,7 +32,7 @@ const ClientSlashFunction = (client) => {
                 interaction.reply(`🏓Latency is ${Date.now() - interaction.createdTimestamp}ms. API Latency is ${Math.round(client.ws.ping)}ms`);
                 break;
             case 'play':
-                await Play(interaction, interaction.options.get('track-resource').value);
+                await Play(interaction, options.get('track-resource').value);
                 break;
             case 'stop':
                 Stop(interaction);
@@ -48,7 +50,7 @@ const ClientSlashFunction = (client) => {
                 NowPlaying(interaction);
                 break;
             case 'skip':
-                interaction.options.get('skiptoindex') ? Skip(interaction) : Skip(interaction, interaction.options.get('skiptoindex'));
+                options.get('skip-to-index') ? Skip(interaction, options.get('skip-to-index').value, false) : Skip(interaction, false, true);
                 break;
             case 'loop':
                 Loop(interaction);
@@ -59,7 +61,7 @@ const ClientSlashFunction = (client) => {
             case 'shuffle':
                 Shuffle(interaction);
                 break;
-            case 'clearCurrentQueue':
+            case 'clear-current-queue':
                 ClearCurrentQueue(interaction);
             case 'connect':
                 Connect(interaction);
@@ -67,11 +69,14 @@ const ClientSlashFunction = (client) => {
             case 'disconnect':
                 Disconnect(interaction);
                 break;
-            case 'removeQueue':
-                RemoveOne(interaction, interaction.options.get('removeindex').value);
+            case 'remove-queue':
+                RemoveOne(interaction, options.get('remove-index').value);
                 break;
-            case 'ctest':
-                console.log('[Hello]');
+            case 'change-prefix':
+                PrefixRegisUpdate(interaction);
+                break;
+            case 'prefix-check':
+                PrefixCheck(interaction);
                 break;
         }
     });

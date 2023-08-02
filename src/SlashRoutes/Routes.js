@@ -29,7 +29,7 @@ const command = [
         name: 'skip',
         description: 'Skip to next Track or choosen Track.',
         options: [{
-            name: 'skiptoindex',
+            name: 'skip-to-index',
             description: 'set index number for skip song (0 is first)',
             type: ApplicationCommandOptionType.Number,
             required: false
@@ -40,9 +40,8 @@ const command = [
     }, {
         name: 'loopall',
         description: 'Looping all queue track'
-
     }, {
-        name: 'shufflle',
+        name: 'shuffle',
         description: "Shuffling All Queue."
     }, {
         name: 'ping',
@@ -54,24 +53,30 @@ const command = [
         name: 'disconnect',
         description: 'Disconnect Bot From The voice channel and Stop Playback'
     }, {
-        name: 'clearCurrentQueue',
+        name: 'clear-current-queue',
         description: 'Clear Current Queue.'
     }, {
-        name: 'removeQueue',
+        name: 'remove-queue',
         description: 'Remove 1 track from the queue',
         options: [{
-            name: 'removeindex',
+            name: 'remove-index',
             description: 'select which one you want remove by its position in list ',
             type: ApplicationCommandOptionType.Number,
             required: true
         }]
     }, {
-        name: 'ctest',
-        description: 'Testing'
+        name: 'change-prefix',
+        description: 'Change Prefix of your server!',
+        options: [{
+            name: 'new-prefix',
+            description: 'replace current prefix with new value.',
+            type: ApplicationCommandOptionType.String,
+            required: true
+        }]
+    }, {
+        name: 'prefix-check',
+        description: 'show what\'s current actual prefix on this guild!'
     }
 ]
-
-//need clear queue
-//need loop all track
 
 export default command

@@ -3,6 +3,7 @@ import ClientAudioFunctionX from "./ClientFunction/ClientAudioFunctionX.js";
 import dotenv from "dotenv";
 import { firstGuildCreate, onResetReady } from "./utils/RegisterSlashCommand.js";
 import ClientSlashFunction from "./ClientFunction/ClientSlashFunction.js";
+import VcUpdate from "./ClientFunction/ClientVoiceStateUpdate.js";
 
 dotenv.config();
 const client = new Client({
@@ -15,27 +16,39 @@ const client = new Client({
     ],
 });
 
-client.once("ready",async () => {
+client.once("ready", async () => {
     if (client.shard.ids.join(', ') == process.env.SHARDCOUNT - 1) {
-        console.log(`Logged in as ${client.user.tag}!`);
+        console.log(`[Debug] Logged in as ${client.user.tag}!`);
         await onResetReady()
-        client.user.setActivity(`Ready for ${process.env.SHARDCOUNT} Server`, {type:'LISTENING'});
-        console.log('All Shard has running');
-        console.log('Ready To Use');
+        console.log('[Debug] All Shard has running');
+        console.log('[Debug] Ready To Use');
     }
 
 });
+client.on('ready', async () => {
+    client.user.setPresence({
+        activities: [
+            {
+                name: 'Prepare for Play',
+                type: 'PLAYING'
+            }
+        ]
+    });
+})
 
 client.on('guildCreate', (guild) => {
-    console.log(`Joined server ${guild.name} (ID: ${guild.id}) on shard ${client.shard.ids.join(', ')}`);
+    console.log(`[Debug] Joined server ${guild.name} (ID: ${guild.id}) on shard ${client.shard.ids.join(', ')}`);
     firstGuildCreate(guild.id);
 });
 
+
+
+VcUpdate(client);
 ClientAudioFunctionX(client);
 ClientSlashFunction(client)
 
 //note
-// remove 1 queue
+// make guidldelete handler
 
 
 

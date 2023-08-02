@@ -2,6 +2,7 @@ import { createAudioPlayer, createAudioResource, NoSubscriberBehavior } from "@d
 import play from 'play-dl';
 import stringIsAValidUrl from '../URLValidate.js';
 import { ytPlaylistPattern, ytVideoPattern } from '../../Global/Variable.js'
+import PlaylistYtVideos from "./VideoSearcher.js";
 
 class AudioPlaybackX {
     constructor() {
@@ -10,27 +11,41 @@ class AudioPlaybackX {
                 noSubscriber: NoSubscriberBehavior.Play,
             },
         });
-        this.AudioInfo = null;
     }
 
     async play(resource) {
         let xstream = await play.stream(resource);
-        this.player.play(createAudioResource(xstream.stream, {
+        const audioResource = createAudioResource(xstream.stream, {
             inlineVolume: true,
             inputType: xstream.type
-        }));
+        })
+        this.player.play(audioResource);
     }
 
     async getAudioInfo(resource) {
         if (stringIsAValidUrl(resource, ytPlaylistPattern)) {
-            return (await play.playlist_info(resource)).videos
+            try {
+                // return (await play.playlist_info(resource)).videos
+                return await PlaylistYtVideos(resource);
+            } catch (e) {
+                console.error(e);
+            }
         } else if (stringIsAValidUrl(resource, ytVideoPattern)) {
-            return (await play.video_info(resource)).video_details
+            try {
+                return (await play.video_info(resource)).video_details
+            } catch (e) {
+                console.error(e);
+            }
         } else {
-            let search = await play.search(resource, {
-                limit: 1
-            })
-            return (await play.video_info(search[0].url)).video_details
+            try {
+                let search = await play.search(resource, {
+                    limit: 1
+                });
+                return (await play.video_info(search[0].url)).video_details
+                
+            } catch (e) {
+                console.error(e);
+            }
         }
 
     }

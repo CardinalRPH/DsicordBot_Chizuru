@@ -1,13 +1,13 @@
+import { ytPlaylistPattern } from "../../Global/Variable.js";
+import stringIsAValidUrl from "../URLValidate.js";
 import AudioPlayback from "./AudioPlayer.js";
 import Queues from "./Queue.js";
 
 const addSongsQueue = async (resource, msg) => {
     let videos = await AudioPlayback.getAudioInfo(resource);
-    console.log(videos.length);
-    if (videos.length > 1 || videos.length !== undefined) {
-
+    if (stringIsAValidUrl(resource, ytPlaylistPattern)) {
         videos.map((audInfo) => {
-            Queues.addQueue(Queues.getMaxId() + 1, audInfo.title, audInfo.durationRaw, audInfo.channel.name, msg.member.user.username, audInfo.thumbnails[2].url, audInfo.url);
+            Queues.addQueue(Queues.getMaxId() + 1, audInfo.title, null, audInfo.name, msg.member.user.username, audInfo.thumbnails, audInfo.url);
         })
         msg.channel.send(`Added ${videos.length} Songs to Queue by ${msg.member.user.username}`);
     } else {
