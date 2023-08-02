@@ -61,8 +61,12 @@ const Skip = async (msg, slashindex, iSlashSKip) => {
                 }).catch((e) => {
                     console.error(e);
                 })
-                if (MsgState.getPrevPlayMsg) {
-                    MsgState.getPrevPlayMsg.delete();
+                try {
+                    if (await MsgState.getPrevPlayMsg) {
+                        await MsgState.getPrevPlayMsg.delete();
+                    }
+                } catch (error) {
+                    console.log('[Debug] No Prev Play Msg');
                 }
                 MsgState.setPrevPlayMsg = await msg.reply({ embeds: musicEmbed(nxtSong.title, nxtSong.durationRaw, nxtSong.name, nxtSong.username, nxtSong.thumbnails, nxtSong.url) });
             }
@@ -90,8 +94,12 @@ const Skip = async (msg, slashindex, iSlashSKip) => {
                     console.error(e);
                 })
                 console.log('next playbbb');
-                if (MsgState.getPrevPlayMsg) {
-                    MsgState.getPrevPlayMsg.delete();
+                try {
+                    if (await MsgState.getPrevPlayMsg) {
+                        await MsgState.getPrevPlayMsg.delete();
+                    }
+                } catch (error) {
+                    console.log('[Debug] No Prev Play Msg');
                 }
                 MsgState.setPrevPlayMsg = await msg.reply({ embeds: musicEmbed(nxtSong.title, nxtSong.durationRaw, nxtSong.name, nxtSong.username, nxtSong.thumbnails, nxtSong.url) });
             } else {

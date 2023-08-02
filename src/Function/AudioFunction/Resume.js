@@ -29,8 +29,12 @@ const Resume = async (msg) => {
         if (Queues.getMaxId() >= 1) {
             StopState.setisPlayingNextSong = true;
             AudioPlayback.play(Queues.getQueue(0).url);
-            if (MsgState.getPrevPlayMsg) {
-                MsgState.getPrevPlayMsg.delete();
+            try {
+                if (await MsgState.getPrevPlayMsg) {
+                    await MsgState.getPrevPlayMsg.delete();
+                }
+            } catch (error) {
+                console.log('[Debug] No Prev Play Msg');
             }
             MsgState.setPrevPlayMsg = await msg.reply({ embeds: musicEmbed(Queues.getQueue(0).title, Queues.getQueue(0).durationRaw, Queues.getQueue(0).name, Queues.getQueue(0).username, Queues.getQueue(0).thumbnails, Queues.getQueue(0).url) });
         }

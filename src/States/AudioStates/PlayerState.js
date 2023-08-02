@@ -14,10 +14,20 @@ let disconnectTimeout;
 const VoiceConnector = new VoiceConnectorX();
 const APlayerState = async (oldState, newState, msg) => {
     if (oldState.status === 'buffering' && newState.status === 'playing') {
+        if (disconnectTimeout) {
+            clearTimeout(disconnectTimeout);
+        }
         console.log('[Debug] Playing Music');
     }
     if (oldState.status === 'playing' && newState.status === 'idle') {
         if (StopState.getisPlayingNextSong == true && LoopState.getLooping == false) {
+            try {
+                if (await MsgState.getPrevPlayMsg) {
+                    await MsgState.getPrevPlayMsg.delete();
+                }
+            } catch (error) {
+                console.log('[Debug] No Prev Play Msg');
+            }
             if (Queues.checkNextQueue()) {
                 if (disconnectTimeout) {
                     clearTimeout(disconnectTimeout);
@@ -42,17 +52,11 @@ const APlayerState = async (oldState, newState, msg) => {
                 }
                 AudioPlayback.play(nxtSong.url);
                 // console.log('next play');
-                if (await MsgState.getPrevPlayMsg) {
-                    await MsgState.getPrevPlayMsg.delete();
-                }
                 MsgState.setPrevPlayMsg = await msg.channel.send({ embeds: musicEmbed(nxtSong.title, nxtSong.durationRaw, nxtSong.name, nxtSong.username, nxtSong.thumbnails, nxtSong.url) });
             } else {
                 SubscriptionState.getSubscription.unsubscribe();
                 console.log('[Debug] no Playing');
                 Queues.clearQueue();
-                if (MsgState.getPrevPlayMsg) {
-                    MsgState.getPrevPlayMsg.delete();
-                }
 
                 disconnectTimeout = setTimeout(() => {
                     if (MsgState.getPrevQMsg) {
@@ -74,8 +78,12 @@ const APlayerState = async (oldState, newState, msg) => {
                 clearTimeout(disconnectTimeout);
             }
             AudioPlayback.play(Queues.getQueue(0).url);
-            if (MsgState.getPrevPlayMsg) {
-                MsgState.getPrevPlayMsg.delete();
+            try {
+                if (await MsgState.getPrevPlayMsg) {
+                    await MsgState.getPrevPlayMsg.delete();
+                }
+            } catch (error) {
+                console.log('[Debug] No Prev Play Msg');
             }
             MsgState.setPrevPlayMsg = await msg.channel.send({ embeds: musicEmbed(Queues.getQueue(0).title, Queues.getQueue(0).durationRaw, Queues.getQueue(0).name, Queues.getQueue(0).username, Queues.getQueue(0).thumbnails, Queues.getQueue(0).url) });
         }

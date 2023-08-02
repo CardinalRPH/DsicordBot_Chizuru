@@ -8,7 +8,7 @@ import VoiceConnectorX from "../utils/ForVoice/VoiceConnector.js";
 
 const VoiceConnector = new VoiceConnectorX();
 const VcUpdate = (client) => {
-    client.on('voiceStateUpdate', (oldState, newState) => {
+    client.on('voiceStateUpdate', async (oldState, newState) => {
         const botId = client.user.id;
         if (VConnectionState.getVConnection != null) {
             if (oldState.member.id === botId && oldState.channelId && !newState.channelId) {
@@ -17,8 +17,12 @@ const VcUpdate = (client) => {
                 SubscriptionState.getSubscription.unsubscribe();
                 console.log('[Debug] Force Disconnect');
                 Queues.clearQueue();
-                if (MsgState.getPrevPlayMsg) {
-                    MsgState.getPrevPlayMsg.delete();
+                try {
+                    if (await MsgState.getPrevPlayMsg) {
+                        await MsgState.getPrevPlayMsg.delete();
+                    }
+                } catch (error) {
+                    console.log('[Debug] No Prev Play Msg');
                 }
                 VoiceConnector.disconnect(VConnectionState.getVConnection);
                 VConnectionState.setVConnection = null;

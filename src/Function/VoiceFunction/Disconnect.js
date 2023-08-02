@@ -9,7 +9,7 @@ import VoiceConnectorX from "../../utils/ForVoice/VoiceConnector.js";
 
 const VoiceConnector = new VoiceConnectorX();
 
-const Disconnect = (msg) => {
+const Disconnect = async (msg) => {
     if (!VoiceState.getVoiceChannel) {
         msg.reply('You are not in Voice');
         return;
@@ -26,8 +26,12 @@ const Disconnect = (msg) => {
         console.log('[Debug] Disconnected');
         Queues.clearQueue();
         VConnectionState.setVConnection = null;
-        if (MsgState.getPrevPlayMsg) {
-            MsgState.getPrevPlayMsg.delete();
+        try {
+            if (await MsgState.getPrevPlayMsg) {
+                await MsgState.getPrevPlayMsg.delete();
+            }
+        } catch (error) {
+            console.log('[Debug] No Prev Play Msg');
         }
         if (MsgState.getPrevQMsg) {
             MsgState.getPrevQMsg.edit({ components: [] });
