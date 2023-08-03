@@ -49,7 +49,6 @@ const ClientAudioFunctionX = (client) => {
                 Disconnect(msg);
                 break;
             case (content == `${prefixx}play`) || (content == `${prefixx}p`):
-                console.log(`[Debug] Call on shard ${client.shard.ids.join(', ')}`);
                 Play(msg);
                 break;
             case content == `${prefixx}pause`:

@@ -42,12 +42,21 @@ class AudioPlaybackX {
                     limit: 1
                 });
                 return (await play.video_info(search[0].url)).video_details
-                
+
             } catch (e) {
                 console.error(e);
             }
         }
 
+    }
+
+    getSingleAudioDuration(url) {
+        return play.video_info(url).then((result) => {
+            return result.video_details.durationRaw
+        }).catch((e) => {
+            console.error(e);
+            return null
+        })
     }
 
     pause() {

@@ -22,13 +22,12 @@ const Resume = async (msg) => {
     StopState.setisPlayingNextSong = true;
     if (AudioPlayback.player.state.status === 'paused') {
         msg.reply('Resume ✅');
-        console.log('[Debug] Paused');
         AudioPlayback.resume();
     } else if (AudioPlayback.player.state.status === 'idle') {
-        console.log('[Debug] isIdle');
         if (Queues.getMaxId() >= 1) {
             StopState.setisPlayingNextSong = true;
-            AudioPlayback.play(Queues.getQueue(0).url);
+            let nxtSong = await Queues.getQueue(0);
+            AudioPlayback.play(nxtSong.url);
             try {
                 if (await MsgState.getPrevPlayMsg) {
                     await MsgState.getPrevPlayMsg.delete();
@@ -36,7 +35,7 @@ const Resume = async (msg) => {
             } catch (error) {
                 console.log('[Debug] No Prev Play Msg');
             }
-            MsgState.setPrevPlayMsg = await msg.reply({ embeds: musicEmbed(Queues.getQueue(0).title, Queues.getQueue(0).durationRaw, Queues.getQueue(0).name, Queues.getQueue(0).username, Queues.getQueue(0).thumbnails, Queues.getQueue(0).url) });
+            MsgState.setPrevPlayMsg = await msg.reply({ embeds: musicEmbed(nxtSong.title, nxtSong.durationRaw, nxtSong.name, nxtSong.username, nxtSong.thumbnails, nxtSong.url) });
         }
     }
 }

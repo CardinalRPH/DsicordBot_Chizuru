@@ -10,7 +10,6 @@ import { musicEmbed } from "../../utils/textFormatter.js";
 
 const Skip = async (msg, slashindex, iSlashSKip) => {
     let keyTo;
-    console.log(slashindex);
     if (slashindex) {
         keyTo = slashindex;
     } else if (iSlashSKip) {
@@ -34,26 +33,32 @@ const Skip = async (msg, slashindex, iSlashSKip) => {
     if (AudioPlayback.player.state.status === 'paused' || AudioPlayback.player.state.status === 'playing') {
 
         if (keyTo == '' || keyTo == ' ') {
-            // console.log('ab');
             StopState.setisPlayingNextSong = false;
             AudioPlayback.stop();
             let nxtSong;
 
             if (LoopState.getLoopAllQueue == true) {
-                nxtSong = Queues.nextAllQueueLoop();
+                nxtSong = await Queues.nextAllQueueLoop();
             } else {
-                nxtSong = Queues.nextQueue();
+                nxtSong = await Queues.nextQueue();
+            }
+            try {
+                if (await MsgState.getPrevPlayMsg) {
+                    await MsgState.getPrevPlayMsg.delete();
+                }
+            } catch (error) {
+                console.log('[Debug] No Prev Play Msg');
             }
 
             if (ShuffleState.getisShuffleOn == true) {
                 Queues.shuffleQueue();
                 ShuffleState.setisShuffleOn = false;
-                nxtSong = Queues.getQueue(0);
+                nxtSong = await Queues.getQueue(0);
             }
             if (ShuffleState.getisShuffleOff == true) {
                 Queues.normalizeQueue();
                 ShuffleState.setisShuffleOff = false;
-                nxtSong = Queues.getQueue(0);
+                nxtSong = await Queues.getQueue(0);
             }
             if (nxtSong) {
                 AudioPlayback.play(nxtSong.url).then(() => {
@@ -61,13 +66,6 @@ const Skip = async (msg, slashindex, iSlashSKip) => {
                 }).catch((e) => {
                     console.error(e);
                 })
-                try {
-                    if (await MsgState.getPrevPlayMsg) {
-                        await MsgState.getPrevPlayMsg.delete();
-                    }
-                } catch (error) {
-                    console.log('[Debug] No Prev Play Msg');
-                }
                 MsgState.setPrevPlayMsg = await msg.reply({ embeds: musicEmbed(nxtSong.title, nxtSong.durationRaw, nxtSong.name, nxtSong.username, nxtSong.thumbnails, nxtSong.url) });
             }
 
@@ -87,13 +85,12 @@ const Skip = async (msg, slashindex, iSlashSKip) => {
                 } else {
                     Queues.deleteQueueBef(nkeyTo);
                 }
-                let nxtSong = Queues.getQueue(0);
+                let nxtSong = await Queues.getQueue(0);
                 AudioPlayback.play(nxtSong.url).then(() => {
                     StopState.setisPlayingNextSong = true;
                 }).catch((e) => {
                     console.error(e);
                 })
-                console.log('next playbbb');
                 try {
                     if (await MsgState.getPrevPlayMsg) {
                         await MsgState.getPrevPlayMsg.delete();

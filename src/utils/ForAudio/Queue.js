@@ -1,3 +1,5 @@
+import AudioPlayback from "./AudioPlayer.js";
+
 class QueuesX {
     constructor() {
         this.queue = [];
@@ -20,17 +22,23 @@ class QueuesX {
         return this.queue.reduce((maxId, item) => Math.max(maxId, item.id), 0);
     }
 
-    getQueue(Index) {
+    async getQueue(Index) {
+        if (this.queue[Index].durationRaw == null) {
+            this.queue[Index].durationRaw = await AudioPlayback.getSingleAudioDuration(this.queue[Index].url)
+        }
         return this.queue[Index];
     }
 
-    nextQueue() {
+    async nextQueue() {
         this.queue.splice(0, 1);
+        if (this.queue[0].durationRaw == null) {
+            this.queue[0].durationRaw = await AudioPlayback.getSingleAudioDuration(this.queue[0].url)
+        }
         return this.queue[0];
     }
 
     checkNextQueue() {
-        return this.queue[1] ? true : false;
+        return this.queue[1] != undefined ? true : false;
     }
 
     deleteQueueBef(targetqueue) {
@@ -57,10 +65,13 @@ class QueuesX {
         this.queue = [...rotatedArray]
     }
 
-    nextAllQueueLoop() {
+    async nextAllQueueLoop() {
         if (this.checkNextQueue()) {
             const firstEl = this.queue.shift();
             this.queue.push(firstEl);
+            if (this.queue[0].durationRaw == null) {
+                this.queue[0].durationRaw = await AudioPlayback.getSingleAudioDuration(this.queue[0].url);
+            }
             return this.queue[0];
         } else {
             return false;

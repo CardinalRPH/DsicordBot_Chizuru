@@ -23,7 +23,6 @@ const Disconnect = async (msg) => {
         if (SubscriptionState.getSubscription) {
             SubscriptionState.getSubscription.unsubscribe();
         }
-        console.log('[Debug] Disconnected');
         Queues.clearQueue();
         VConnectionState.setVConnection = null;
         try {
