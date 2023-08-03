@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import { firstGuildCreate, onResetReady } from "./utils/RegisterSlashCommand.js";
 import ClientSlashFunction from "./ClientFunction/ClientSlashFunction.js";
 import VcUpdate from "./ClientFunction/ClientVoiceStateUpdate.js";
+import getCurrentDateTime from "./utils/DateGenerate.js";
 
 dotenv.config();
 const client = new Client({
@@ -21,6 +22,7 @@ client.once("ready", async () => {
         console.log(`[Debug] Logged in as ${client.user.tag}!`);
         await onResetReady()
         console.log('[Debug] All Shard has running');
+        console.log(`[Debug] Time Stamp ${getCurrentDateTime}`);
         console.log('[Debug] Ready To Use');
     }
 
